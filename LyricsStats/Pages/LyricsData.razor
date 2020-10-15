@@ -1,0 +1,262 @@
+﻿@page "/lyrics/{name}"
+
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager _navigationManager
+
+<h3>Lyrics Data</h3>
+<p>You are looking for an artist that sounds like @Name</p>
+
+@if (spinner)
+{
+    <div class="spinner"></div>
+
+}
+
+
+@if (string.IsNullOrWhiteSpace(errorString) == false)
+{
+    <div class="h2">@errorString</div>
+}
+else if (artists is null)
+{
+    <div class="h4">Loading...</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Name</th>
+                <th>Country</th>
+                <th>Disambiguation</th>
+                <th>MBID</th>
+                <th>Fetch lyrics stats</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var artist in artists.artists)
+            {
+                <tr>
+                    <td>@artist.name</td>
+                    <td>@artist.country</td>
+                    <td>@artist.disambiguation</td>
+                    <td>@artist.id</td>
+                    <td><button @onclick="@(() => FetchFor(artist))">Fetch</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    ArtistModel artists;
+    ReleaseModel artistReleases;
+    RecordingModel releaseRecordings;
+    LyricsModel songLyrics;
+    List<RecordingModel> allRecordings = new List<RecordingModel>();
+    string errorString;
+    List<string> uniqueSongs;
+    bool spinner;
+
+    [Parameter]
+    public string Name { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var encoded = Uri.EscapeUriString(@Name);
+        var client = _clientFactory.CreateClient("musicbrainz");    // asking for a specific client
+
+        try
+        {
+            artists = await client.GetFromJsonAsync<ArtistModel>(Constants.ArtistQueryFront + encoded + Constants.ArtistQueryBack);   // (2)
+            errorString = null;
+        }
+        catch (Exception ex)
+        {
+            errorString = $"Error while getting Artists response: { ex.Message }";
+        }
+    }
+
+    private async Task FetchFor(Artist artist)
+    {
+        var encoded = Uri.EscapeUriString(artist.id);
+        var client = _clientFactory.CreateClient("musicbrainz");
+        var clientSecure = _clientFactory.CreateClient("musicbrainzSecure");
+        var clientForLyrics = _clientFactory.CreateClient("Lyrics.ovh");
+        string artistName = artist.name;
+        int releasesCount = 0;
+        decimal average = 0M;
+        var jsonSerializer = new Newtonsoft.Json.JsonSerializer();
+
+        spinner = true;
+
+        string releasesUrl = Constants.GetReleasesFront + encoded + Constants.GetReleasesBack;
+
+        var request = new HttpRequestMessage(HttpMethod.Get, releasesUrl);
+        request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+
+        using (var response = await clientSecure.SendAsync(request))
+        {
+            try
+            {
+
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException ex)
+            {
+                throw ex;
+            }
+
+            var stream = await response.Content.ReadAsStreamAsync();
+
+            using (var streamReader = new System.IO.StreamReader(stream))
+            {
+                using (var jsonTextReader = new Newtonsoft.Json.JsonTextReader(streamReader))
+                {
+                    //var jsonSerializer = new Newtonsoft.Json.JsonSerializer();
+                    artistReleases = jsonSerializer.Deserialize<ReleaseModel>(jsonTextReader);
+
+                    releasesCount = artistReleases.ReleaseGroupCount;
+                }
+            }
+        }
+
+        // At this point, we have all the album and ep releases of the artist, now we want to pool all the tracks in those releases together
+
+        // 1. Get all recordings for each release group
+        // URL is like: http://musicbrainz.org/ws/2/recording/?query=rgid:0df8ee07-7d17-333c-8338-2ea24aaeac88
+
+        StringBuilder recordingsUrl = new StringBuilder();
+        int releaseGroupCounter = 0;
+
+        foreach (var releaseGroup in artistReleases.ReleaseGroups)
+        {
+            if ((releaseGroup.PrimaryType == "Album") && (!releaseGroup.SecondaryTypes.Contains("Compilation")))                    // Only process the release if it is an Album and not a Compilation. API hangs after too many calls anyway
+            {
+
+                await Task.Delay(1000);      // Give some time to the API to 'breathe'
+
+
+                recordingsUrl.Append(Constants.GetRecordingsFront);     // ---------------------------- //
+                recordingsUrl.Append(releaseGroup.id);                  //       Constructing URL       //
+                recordingsUrl.Append(Constants.GetRecordingsBack);      // ---------------------------- //
+
+                request = new HttpRequestMessage(HttpMethod.Get, recordingsUrl.ToString());
+                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+                using (var response = await clientSecure.SendAsync(request))
+                {
+                    try
+                    {
+                        releaseGroupCounter++;
+                        response.EnsureSuccessStatusCode();
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        throw ex;
+                    }
+
+                    var stream = await response.Content.ReadAsStreamAsync();
+
+                    using (var streamReader = new System.IO.StreamReader(stream))
+                    {
+                        using (var jsonTextReader = new Newtonsoft.Json.JsonTextReader(streamReader))
+                        {
+                            jsonSerializer = new Newtonsoft.Json.JsonSerializer();
+                            releaseRecordings = jsonSerializer.Deserialize<RecordingModel>(jsonTextReader);
+
+                            allRecordings.Add(releaseRecordings);
+
+                        }
+                    }
+
+                }
+                recordingsUrl.Clear();
+            }
+        }
+        releaseGroupCounter = 0;
+        Console.WriteLine(allRecordings.Count);
+
+        // 2. Get list of unique song titles from these recordings
+
+        List<string> songList = new List<string>();
+
+        foreach (var recording in allRecordings)
+        {
+            foreach (var song in recording.Recordings)
+            {
+                if (song.Title != "")
+                {
+                    songList.Add(song.Title);
+                }
+            }
+        }
+
+        uniqueSongs = songList.Distinct().ToList();
+
+        // 3. Call lyrics API for each of these titles
+        // URL is like https://api.lyrics.ovh/v1/Abba/angel%20eyes
+
+        StringBuilder lyricsUrl = new StringBuilder();
+        int songCounter = 0;
+        int wordCount = 0;
+        int songWithLyricsCounter = 0;
+
+        var rnd = new Random();
+        var shuffledSongs = uniqueSongs.OrderBy(item => rnd.Next());            // Shuffling list of songs to get different ones each time, since we will often be dropped by the API before getting to all of them
+
+        foreach (string song in shuffledSongs)
+        {
+            lyricsUrl.Append(Helpers.Slugify(artistName));
+            lyricsUrl.Append("/");
+            lyricsUrl.Append(Helpers.Slugify(song));
+
+            request = new HttpRequestMessage(HttpMethod.Get, lyricsUrl.ToString());
+            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+            using (var response = await clientForLyrics.SendAsync(request))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    songCounter++;
+                    using (var stream = await response.Content.ReadAsStreamAsync())
+                    {
+                        using (var streamReader = new System.IO.StreamReader(stream))
+                        {
+                            using (var jsonTextReader = new Newtonsoft.Json.JsonTextReader(streamReader))
+                            {
+                                jsonSerializer = new Newtonsoft.Json.JsonSerializer();
+                                songLyrics = jsonSerializer.Deserialize<LyricsModel>(jsonTextReader);
+
+                                // Parse songLyrics
+                                if (songLyrics.lyrics != "")
+                                {
+                                    wordCount += Helpers.GetWordCount(songLyrics.lyrics);
+                                    songWithLyricsCounter++;
+                                }
+
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine(wordCount);
+                }
+            }
+            lyricsUrl.Clear();
+        }
+        if (songWithLyricsCounter != 0)
+        {
+            average = wordCount / songWithLyricsCounter;
+        }
+        GoToResultsPage(artistName, average);
+    }
+
+    private void GoToResultsPage(string artistName, decimal avg)
+    {
+        _navigationManager.NavigateTo("results/" + artistName + "/" + avg);
+    }
+}

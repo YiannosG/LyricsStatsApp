@@ -1,0 +1,15 @@
+D:\MyCode\LyricsStatsApp\LyricsStatsTests\bin\Debug\netstandard2.0\LyricsStatsTests.deps.json
+D:\MyCode\LyricsStatsApp\LyricsStatsTests\bin\Debug\netstandard2.0\LyricsStatsTests.dll
+D:\MyCode\LyricsStatsApp\LyricsStatsTests\obj\Debug\netstandard2.0\LyricsStatsTests.csprojAssemblyReference.cache
+D:\MyCode\LyricsStatsApp\LyricsStatsTests\obj\Debug\netstandard2.0\LyricsStatsTests.AssemblyInfoInputs.cache
+D:\MyCode\LyricsStatsApp\LyricsStatsTests\obj\Debug\netstandard2.0\LyricsStatsTests.AssemblyInfo.cs
+D:\MyCode\LyricsStatsApp\LyricsStatsTests\obj\Debug\netstandard2.0\LyricsStatsTests.RazorComponent.input.cache
+D:\MyCode\LyricsStatsApp\LyricsStatsTests\obj\Debug\netstandard2.0\RazorDeclaration\Component1.razor.g.cs
+D:\MyCode\LyricsStatsApp\LyricsStatsTests\obj\Debug\netstandard2.0\RazorDeclaration\_Imports.razor.g.cs
+D:\MyCode\LyricsStatsApp\LyricsStatsTests\obj\Debug\netstandard2.0\LyricsStatsTests.RazorTargetAssemblyInfo.cache
+D:\MyCode\LyricsStatsApp\LyricsStatsTests\obj\Debug\netstandard2.0\staticwebassets\LyricsStatsTests.StaticWebAssets.Manifest.cache
+D:\MyCode\LyricsStatsApp\LyricsStatsTests\obj\Debug\netstandard2.0\staticwebassets\LyricsStatsTests.StaticWebAssets.xml
+D:\MyCode\LyricsStatsApp\LyricsStatsTests\bin\Debug\netstandard2.0\xunit.runner.visualstudio.testadapter.dll
+D:\MyCode\LyricsStatsApp\LyricsStatsTests\bin\Debug\netstandard2.0\xunit.runner.reporters.net452.dll
+D:\MyCode\LyricsStatsApp\LyricsStatsTests\bin\Debug\netstandard2.0\xunit.runner.utility.net452.dll
+D:\MyCode\LyricsStatsApp\LyricsStatsTests\bin\Debug\netstandard2.0\xunit.abstractions.dll

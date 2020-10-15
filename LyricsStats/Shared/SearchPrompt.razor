@@ -1,0 +1,43 @@
+﻿@inject NavigationManager _navigationManager
+
+<div class="alert alert-secondary mt-4" role="alert">
+    <span class="oi oi-magnifying-glass mr-2" aria-hidden="true"></span>
+    <strong>@Title</strong>
+
+    @*<input type="text" @bind="name" />*@
+
+    @*<form action="/lyrics/@name">
+            <input type="submit" value="search for @name" />
+        </form>*@
+
+    <EditForm Model="@searchModel" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <InputText id="name" @bind-Value="searchModel.ArtistName" />
+
+        <button type="submit">Submit</button>
+    </EditForm>
+
+</div>
+
+
+@code {
+    [Parameter]
+    public string Title { get; set; }
+
+    private SearchModel searchModel = new SearchModel();
+
+    string name;
+
+    private void HandleValidSubmit()
+    {
+        name = searchModel.ArtistName;
+        GoToArtistsPage(name);
+    }
+
+    private void GoToArtistsPage(string artistName)
+    {
+        _navigationManager.NavigateTo("lyrics/" + artistName);
+    }
+}

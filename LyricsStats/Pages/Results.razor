@@ -1,0 +1,62 @@
+﻿@page "/results/{artistName}/{average}"
+@inject LyricsStats.Domain.StateContainer StateContainer
+@implements IDisposable 
+
+<h3>Results</h3>
+<h1>@ArtistName songs have @Average words on average!</h1>
+
+<p>Artists so far: <b>@StateContainer.ArtistsAndAverages.Count</b></p>
+
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Name</th>
+            <th>Average</th>            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (System.Collections.DictionaryEntry de in StateContainer.ArtistsAndAverages)
+        {
+            <tr>
+                <td>@de.Key</td>
+                <td>@de.Value</td>                
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    <button disabled=@isTaskRunning @onclick="ChangePropertyValue">@buttonName</button>
+</p>
+
+@code {
+
+    [Parameter]
+    public string ArtistName { get; set; }
+
+    [Parameter]
+    public string Average { get; set; }
+
+    bool isTaskRunning = false;                             // This is for disabling the button after it has been clicked once to add the artist
+    string buttonName = "Store artist for comparison";                                                                                                                                                                                                                                        
+  
+
+    protected override void OnInitialized()
+    {
+        StateContainer.OnChange += StateHasChanged;
+    }
+
+    private void ChangePropertyValue()
+    {
+        StateContainer.SetProperty(ArtistName, Average);
+
+        isTaskRunning = true;                                                                                                                   //
+        buttonName = "Please navigate to Home page, to enter another arist name";
+    }
+
+    public void Dispose()
+    {
+        StateContainer.OnChange -= StateHasChanged;
+    }
+
+}

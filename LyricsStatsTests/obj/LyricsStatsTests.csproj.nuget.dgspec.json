@@ -1,0 +1,172 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\MyCode\\LyricsStatsApp\\LyricsStatsTests\\LyricsStatsTests.csproj": {}
+  },
+  "projects": {
+    "D:\\MyCode\\LyricsStatsApp\\LyricsStatsTests\\LyricsStatsTests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\MyCode\\LyricsStatsApp\\LyricsStatsTests\\LyricsStatsTests.csproj",
+        "projectName": "LyricsStatsTests",
+        "projectPath": "D:\\MyCode\\LyricsStatsApp\\LyricsStatsTests\\LyricsStatsTests.csproj",
+        "packagesPath": "C:\\Users\\yiann\\.nuget\\packages\\",
+        "outputPath": "D:\\MyCode\\LyricsStatsApp\\LyricsStatsTests\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\yiann\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {
+              "D:\\MyCode\\LyricsStatsApp\\LyricsStats\\LyricsStats.csproj": {
+                "projectPath": "D:\\MyCode\\LyricsStatsApp\\LyricsStats\\LyricsStats.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "JustMock": {
+              "target": "Package",
+              "version": "[2020.3.916.1, )"
+            },
+            "Microsoft.AspNetCore.Components": {
+              "target": "Package",
+              "version": "[3.1.9, )"
+            },
+            "Microsoft.AspNetCore.Components.Web": {
+              "target": "Package",
+              "version": "[3.1.9, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[16.7.1, )"
+            },
+            "bunit": {
+              "target": "Package",
+              "version": "[1.0.0-beta-10, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.4.1, )"
+            },
+            "xunit.runner.visualstudio": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.4.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\MyCode\\LyricsStatsApp\\LyricsStats\\LyricsStats.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\MyCode\\LyricsStatsApp\\LyricsStats\\LyricsStats.csproj",
+        "projectName": "LyricsStats",
+        "projectPath": "D:\\MyCode\\LyricsStatsApp\\LyricsStats\\LyricsStats.csproj",
+        "packagesPath": "C:\\Users\\yiann\\.nuget\\packages\\",
+        "outputPath": "D:\\MyCode\\LyricsStatsApp\\LyricsStats\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\yiann\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "Microsoft.AspNetCore.Components.WebAssembly": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[12.0.3, )"
+            },
+            "System.CodeDom": {
+              "target": "Package",
+              "version": "[4.7.0, )"
+            },
+            "System.Net.Http.Json": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
